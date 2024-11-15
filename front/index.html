@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD Energia Cliente</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gerenciamento de Clientes</h1>
+    <form id="form-create">
+        <h2>Cadastrar Cliente</h2>
+        <input type="text" id="nome" placeholder="Nome" required>
+        <input type="text" id="cpf" placeholder="CPF" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="tel" id="tel" placeholder="Telefone" required>
+        <select id="energia" required>
+            <option value="" disabled selected>Selecione o tipo de energia</option>
+            <option value="Eólica">Eólica</option>
+            <option value="Solar">Solar</option>
+        </select>
+        <input type="number" id="metros" placeholder="Metros (m²)" required>
+        <button type="submit">Cadastrar</button>
+    </form>
+
+    <h2>Clientes Cadastrados</h2>
+    <table id="table-clients">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>Email</th>
+                <th>Telefone</th>
+                <th>Energia</th>
+                <th>Metros</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+        </tbody>
+    </table>
+    <script src="script.js"></script>
+</body>
+</html>
