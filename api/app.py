@@ -1,14 +1,15 @@
 from flask import Flask, request, jsonify
 from flask_restful import Api, Resource
 from flask_cors import CORS
-import cx_Oracle
+import oracledb
 
 app = Flask(__name__)
 CORS(app)
 api = Api(app)
 
-dsn_tns = cx_Oracle.makedsn('oracle.fiap.com.br', 1521, service_name='orcl')
-connection = cx_Oracle.connect(user='rm552473', password='080100', dsn=dsn_tns)
+dsn_tns = oracledb.makedsn('oracle.fiap.com.br', 1521, service_name='orcl')
+
+connection = oracledb.connect(user='rm552473', password='080100', dsn=dsn_tns)
 
 def create_table_if_not_exists():
     try:
@@ -32,7 +33,7 @@ def create_table_if_not_exists():
             END;
         """)
         print("Tabela tb_energia_cliente verificada/criada com sucesso.")
-    except cx_Oracle.DatabaseError as e:
+    except oracledb.DatabaseError as e:
         print(f"Erro ao criar/verificar tabela: {str(e)}")
 
 class ClienteResource(Resource):
@@ -54,7 +55,7 @@ class ClienteResource(Resource):
                     'metros': row[6]
                 })
             return jsonify(result)
-        except cx_Oracle.DatabaseError as e:
+        except oracledb.DatabaseError as e:
             return {'message': f'Erro ao buscar registros: {str(e)}'}, 500
 
     def post(self):
@@ -68,7 +69,7 @@ class ClienteResource(Resource):
             """, (data['nome'], data['cpf'], data['email'], data['tel'], data['energia'], data['metros']))
             connection.commit()
             return {'message': 'Registro inserido com sucesso'}, 201
-        except cx_Oracle.DatabaseError as e:
+        except oracledb.DatabaseError as e:
             return {'message': f'Erro ao inserir registro: {str(e)}'}, 500
 
     def put(self, id):
@@ -82,7 +83,7 @@ class ClienteResource(Resource):
             """, (data['nome'], data['cpf'], data['email'], data['tel'], data['energia'], data['metros'], id))
             connection.commit()
             return {'message': 'Registro atualizado com sucesso'}
-        except cx_Oracle.DatabaseError as e:
+        except oracledb.DatabaseError as e:
             return {'message': f'Erro ao atualizar registro: {str(e)}'}, 500
 
     def delete(self, id):
@@ -91,9 +92,8 @@ class ClienteResource(Resource):
             cursor.execute("DELETE FROM tb_energia_cliente WHERE id = :1", (id,))
             connection.commit()
             return {'message': 'Registro deletado com sucesso'}
-        except cx_Oracle.DatabaseError as e:
+        except oracledb.DatabaseError as e:
             return {'message': f'Erro ao deletar registro: {str(e)}'}, 500
-        
 
 
 api.add_resource(ClienteResource, '/clientes', '/clientes/<int:id>')
@@ -101,4 +101,3 @@ api.add_resource(ClienteResource, '/clientes', '/clientes/<int:id>')
 if __name__ == '__main__':
     create_table_if_not_exists() 
     app.run(host='0.0.0.0', port=5000, debug=True)
-
